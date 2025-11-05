@@ -6,8 +6,10 @@ import HiddenMessage from './components/HiddenMessage';
 import FloatingElements from './components/FloatingElements';
 import FloatingStars from './components/FloatingStars';
 import FloatingSuns from './components/FloatingSuns';
+import FloatingBubbles from './components/FloatingBubbles';
+import FloatingKeys from './components/FloatingKeys';
 import Confetti from './components/Confetti';
-import { HeartIcon, MoonIcon, CookieIcon, SunIcon } from './components/icons';
+import { HeartIcon, MoonIcon, CookieIcon, SunIcon, WaveIcon, KeyIcon } from './components/icons';
 
 type CardState = 'closed' | 'opening' | 'puzzle' | 'revealing' | 'revealed';
 
@@ -20,8 +22,8 @@ const App: React.FC = () => {
             id: 'moon',
             quiz: {
                 question: 'Guess who loves you more than anything in the whole wide world?',
-                answer: 'hari',
-                hint: 'Hint: It\'s "hari" 😉'
+                answer: 'you',
+                hint: 'Hint: It\'s "you" 😉'
             },
             message: {
                 text: 'I love you to the moon & back',
@@ -40,8 +42,8 @@ const App: React.FC = () => {
             id: 'cookies',
             quiz: {
                 question: 'What\'s sweeter than a cookie and loves you a whole bunch?',
-                answer: 'hari',
-                hint: 'Hint: The answer is still "hari"! 🥰'
+                answer: 'you',
+                hint: 'Hint: The answer is still "you"! 🥰'
             },
             message: {
                 text: 'I love you more than cookies!',
@@ -80,13 +82,61 @@ const App: React.FC = () => {
                 Initial: FloatingElements,
                 Revealed: FloatingSuns
             },
+        },
+        {
+            id: 'ocean',
+            quiz: {
+                question: 'My love for you is as deep as the...?',
+                answer: 'ocean',
+                hint: 'Hint: It\'s a vast body of water! 🌊'
+            },
+            message: {
+                text: 'My love for you is deeper than the ocean',
+                Icon: () => <WaveIcon className="text-blue-400" />,
+            },
+            background: {
+                initial: 'bg-gradient-to-br from-cyan-200 to-blue-400',
+                revealed: 'bg-gradient-to-br from-blue-800 via-teal-900 to-indigo-900'
+            },
+            floatingElements: {
+                Initial: FloatingElements,
+                Revealed: FloatingBubbles
+            },
+        },
+        {
+            id: 'key',
+            quiz: {
+                question: 'Who holds the key to my heart?',
+                answer: 'you',
+                hint: 'Hint: The answer is YOU! 🔑'
+            },
+            message: {
+                text: 'You hold the key to my heart',
+                Icon: () => <KeyIcon className="text-amber-500" />,
+            },
+            background: {
+                initial: 'bg-gradient-to-br from-rose-200 to-pink-300',
+                revealed: 'bg-gradient-to-br from-red-500 via-rose-700 to-red-900'
+            },
+            floatingElements: {
+                Initial: FloatingElements,
+                Revealed: FloatingKeys
+            },
         }
     ], []);
 
     const [selectedScenario, setSelectedScenario] = useState(scenarios[0]);
 
     useEffect(() => {
-        const randomIndex = Math.floor(Math.random() * scenarios.length);
+        const lastScenarioIndex = localStorage.getItem('lastScenarioIndex');
+        const lastIndex = lastScenarioIndex ? parseInt(lastScenarioIndex, 10) : -1;
+
+        let randomIndex;
+        do {
+            randomIndex = Math.floor(Math.random() * scenarios.length);
+        } while (scenarios.length > 1 && randomIndex === lastIndex);
+
+        localStorage.setItem('lastScenarioIndex', randomIndex.toString());
         setSelectedScenario(scenarios[randomIndex]);
     }, [scenarios]);
 
